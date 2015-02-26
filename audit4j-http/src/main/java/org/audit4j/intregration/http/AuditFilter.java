@@ -26,59 +26,77 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.audit4j.core.AuditManager;
 import org.audit4j.core.dto.EventBuilder;
 
 /**
  * The Class Auditfilter.
- *
+ * 
  * @author <a href="mailto:janith3000@gmail.com">Janith Bandara</a>
  */
-public class AuditFilter implements Filter{
+public class AuditFilter implements Filter {
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.Filter#destroy()
-	 */
-	@Override
-	public void destroy() {
-		// TODO Auto-generated method stub
-		
-	}
+    /** The user session attr name. */
+    private  String userSessionAttrName = null;
+    /*
+     * (non-Javadoc)
+     * 
+     * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
+     */
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+        userSessionAttrName = filterConfig.getServletContext().getInitParameter("userSessionAttrName");
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)
-	 */
-	@Override
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see javax.servlet.Filter#destroy()
+     */
+    @Override
+    public void destroy() {
+        // TODO Auto-generated method stub
+
+    }
+
+
+    /* (non-Javadoc)
+     * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)
+     */
+    @SuppressWarnings("unchecked")
+    @Override
 	public void doFilter(ServletRequest req, ServletResponse res,
 			FilterChain chain) throws IOException, ServletException {
 		HttpServletRequest request = (HttpServletRequest) req;
         
+		String actor = null;
+        
+        if (userSessionAttrName != null && !userSessionAttrName.equals("")) {
+            HttpSession session = request.getSession(false);
+            actor = (String) session.getAttribute("");
+        }
         String ipAddress = request.getRemoteAddr();
         String url = request.getRequestURL().toString();
-         
+        
         EventBuilder builder = new EventBuilder();
-        builder.addActor(ipAddress).addAction(url);
+        builder.addAction(url).addOrigin(ipAddress);
+        if (actor==null) {
+            builder.addActor(ipAddress);
+        } else {
+            builder.addActor(actor);
+        }
         
         Map<String, String[]> params = req.getParameterMap();
         
         for (final Map.Entry<String, String[]> entry : params.entrySet()) {
-			System.out.println("Params" + entry.getKey() + ":" + entry.getValue().toString());
-			  builder.addField(entry.getKey(), entry.getValue().toString());
+			  builder.addField(entry.getKey(), entry.getValue());
 		}
         
-        AuditManager manager = AuditManager.getInstance();
-        manager.audit(builder.build());
-        
-	}
-
-	/* (non-Javadoc)
-	 * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
-	 */
-	@Override
-	public void init(FilterConfig arg0) throws ServletException {
-		// TODO Auto-generated method stub
-		
+        AuditManager.getInstance().audit(builder.build());
+        chain.doFilter(req, res);
 	}
 
 }
