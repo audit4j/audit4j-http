@@ -1,4 +1,15 @@
-audit4j-http
-============
+# Audit4j HTTP integration suit.
 
-Audit4j HTTP integration is in under development.
+Following set of audit4j HTTP plugins can be used to audit events in varipus environments and tools.
+
+* [http-app] - HTTP App plugin.
+* [http-catalina] - Audit4j HTTP plugin for Tomcat and Jboss application server.
+* [http-glassfish] - HTTP plugin for Oracle Glassfish.
+* [http-jetty] - HTTP plugin for Jetty.
+
+
+
+[http-app]:/audit4j-http-catalina/README.md
+[http-catalina]:/audit4j-http-catalina/README.md
+[http-glassfish]:/audit4j-http-catalina/README.md
+[http-jetty]:/audit4j-http-catalina/README.md
