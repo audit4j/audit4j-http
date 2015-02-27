@@ -9,7 +9,10 @@ Put audit4j-core-2.3.1.jar(or higher) and audit4j-tomcat-1.x.x.jar in the tomcat
 
 
 Add the following configurations to Tomcat's server.xml file. The 'Engine' line is used to show context
+
+```xml
 <Listener className="org.audit4j.intregration.tomcat.AuditContextLifecycleListener"/>
 
-<Engine name="Catalina" defaultHost="localhost"> #
+<Engine name="Catalina" defaultHost="localhost"> 
 	<Valve className="org.audit4j.intregration.tomcat.Audit4jTomcatValve"/>
+```
