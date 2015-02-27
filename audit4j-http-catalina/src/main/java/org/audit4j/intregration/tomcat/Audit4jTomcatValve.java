@@ -22,11 +22,12 @@ import org.audit4j.core.dto.EventBuilder;
  *Put audit4j-core-2.3.1.jar(or higher) and audit4j-tomcat-2.3.1.jar in the tomcat 'lib' directory. 
  *</p>
  *Add the following Valve line to Tomcat's server.xml file. The 'Engine' line is used to show context.
- *<code>
+ *<pre>
+ *{@code
  <Engine name="Catalina" defaultHost="localhost">
  <Valve className="org.audit4j.intregration.tomcat.Audit4jTomcatValve"/>
- 
- </code>
+ }
+ </pre>
  *
  * @author <a href="mailto:janith3000@gmail.com">Janith Bandara</a>
  * 
