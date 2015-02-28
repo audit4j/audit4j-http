@@ -11,15 +11,16 @@ import org.audit4j.core.util.ReflectUtil;
 
 /**
  * The Class ServletContexConfigSupport.
- *
+ * 
  * @author <a href="mailto:janith3000@gmail.com">Janith Bandara</a>
  */
 class ServletContexConfigSupport {
 
     /**
      * Load config.
-     *
-     * @param servletContext the servlet context
+     * 
+     * @param servletContext
+     *            the servlet context
      * @return the configuration
      */
     Configuration loadConfig(ServletContext servletContext) {
@@ -30,23 +31,10 @@ class ServletContexConfigSupport {
         String metaData = servletContext.getInitParameter(ContextConfigParams.PARAM_META_DATA);
         String properties = servletContext.getInitParameter(ContextConfigParams.PARAM_PROPERTIES);
 
-        Configuration config = new Configuration();
-        String[] handlerClassList = handlers.split(";");
-        for (String handlerClassName : handlerClassList) {
-            ReflectUtil<Handler> util = new ReflectUtil<>();
-            Handler handler = util.getNewInstance(handlerClassName);
-            config.addHandler(handler);
-        }
+        Configuration config = Configuration.INSTANCE;
+        config.setHandlers(new ReflectUtil<Handler>().getNewInstanceList(handlers.split(";")));
         config.setLayout(new ReflectUtil<Layout>().getNewInstance(layout));
-        if (filters != null && !filters.equals("")) {
-            String[] filterClassList = filters.split(";");
-            for (String filterClassName : filterClassList) {
-                ReflectUtil<AuditEventFilter> util = new ReflectUtil<>();
-                AuditEventFilter filter = util.getNewInstance(filterClassName);
-                config.addFilter(filter);
-            }
-        }
-        
+        config.setFilters(new ReflectUtil<AuditEventFilter>().getNewInstanceList(filters.split(";")));
         config.setOptions(options);
         config.setMetaData(new ReflectUtil<MetaData>().getNewInstance(metaData));
         String[] propertiesList = properties.split(";");
@@ -59,8 +47,9 @@ class ServletContexConfigSupport {
 
     /**
      * Checks for handlers.
-     *
-     * @param servletContext the servlet context
+     * 
+     * @param servletContext
+     *            the servlet context
      * @return true, if successful
      */
     boolean hasHandlers(ServletContext servletContext) {
