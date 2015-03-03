@@ -1,4 +1,4 @@
-# Audit4j HTTP integration suite.
+# Audit4j HTTP integration suit.
 
 Following set of audit4j HTTP plugins can be used to audit events in varipus environments and tools.
 
