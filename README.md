@@ -1,4 +1,4 @@
-# Audit4j HTTP integration suit.
+# Audit4j HTTP integration suite.
 
 Following set of audit4j HTTP plugins can be used to audit events in varipus environments and tools.
 
@@ -9,7 +9,7 @@ Following set of audit4j HTTP plugins can be used to audit events in varipus env
 
 
 
-[http-app]:/audit4j-http-catalina/README.md
+[http-app]:/audit4j-http-app/README.md
 [http-catalina]:/audit4j-http-catalina/README.md
-[http-glassfish]:/audit4j-http-catalina/README.md
-[http-jetty]:/audit4j-http-catalina/README.md
+[http-glassfish]:/audit4j-http-glassfish/README.md
+[http-jetty]:/audit4j-http-jetty/README.md
