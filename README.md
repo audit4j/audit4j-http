@@ -7,7 +7,9 @@ Following set of audit4j HTTP plugins can be used to audit events in varipus env
 * [http-glassfish] - HTTP plugin for Oracle Glassfish.
 * [http-jetty] - HTTP plugin for Jetty.
 
+For more information please visit: http://audit4j.org
 
+For usage, api-guide and development please visit: http://audit4j.org/documentation
 
 [http-app]:/audit4j-http-app/README.md
 [http-catalina]:/audit4j-http-catalina/README.md
