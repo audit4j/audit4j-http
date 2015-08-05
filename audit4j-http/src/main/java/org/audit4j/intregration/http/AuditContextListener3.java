@@ -23,27 +23,18 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.audit4j.core.AuditManager;
-import org.audit4j.core.util.EnvUtil;
+import org.audit4j.core.util.annotation.Beeta;
 
 /**
- * The AuditContextListener3 for Servlet spec 2.x.
+ * The AuditContextListener3 for Servlet spec 3.x.
  * 
  * @author <a href="mailto:janith3000@gmail.com">Janith Bandara</a>
  * 
- *         <pre>
- * {@code
- * <listener>
- *     <listener-class>
- *              org.audit4j.core.web.AuditContextListener 
- *     </listener-class>
- * </listener> 
- * }
- * </pre>
- * 
- * 
  * @since 2.3.1
  */
-public class AuditContextListener implements ServletContextListener {
+@Beeta
+@WebListener
+public class AuditContextListener3 implements ServletContextListener {
 
     /** The config support. */
     private ServletContexConfigSupport configSupport = null;
@@ -57,13 +48,11 @@ public class AuditContextListener implements ServletContextListener {
      */
     @Override
     public void contextInitialized(ServletContextEvent contextEvent) {
-        if (!EnvUtil.isServletSpec3OrHigher(contextEvent.getServletContext())) {
-            configSupport = new ServletContexConfigSupport();
-            if (configSupport.hasHandlers(contextEvent.getServletContext())) {
-                AuditManager.startWithConfiguration(configSupport.loadConfig(contextEvent.getServletContext()));
-            } else {
-                AuditManager.startWithConfiguration(getConfFilePath(contextEvent.getServletContext()));
-            }
+        configSupport = new ServletContexConfigSupport();
+        if (configSupport.hasHandlers(contextEvent.getServletContext())) {
+            AuditManager.startWithConfiguration(configSupport.loadConfig(contextEvent.getServletContext()));
+        } else if (configSupport.canSearchConfigFile(contextEvent.getServletContext())) {
+            AuditManager.startWithConfiguration(getConfFilePath(contextEvent.getServletContext()));
         }
     }
 
@@ -75,7 +64,9 @@ public class AuditContextListener implements ServletContextListener {
      */
     @Override
     public void contextDestroyed(ServletContextEvent contextEvent) {
-        AuditManager.getInstance().shutdown();
+        if (configSupport.canSearchConfigFile(contextEvent.getServletContext())) {
+            AuditManager.shutdown();
+        }
     }
 
     /**
@@ -88,5 +79,4 @@ public class AuditContextListener implements ServletContextListener {
     private String getConfFilePath(ServletContext context) {
         return context.getRealPath("/WEB-INF/classes");
     }
-
 }

@@ -1,7 +1,7 @@
-package org.audit4j.intregration.http;
-
 /*
- * Copyright 2014 Janith Bandara
+ * Copyright (c) 2014-2015 Janith Bandara, This source is a part of
+ * Audit4j - An open source auditing framework.
+ * http://audit4j.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@ package org.audit4j.intregration.http;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package org.audit4j.intregration.http;
 
 import java.io.IOException;
 import java.util.Map;
@@ -39,7 +41,8 @@ import org.audit4j.core.dto.EventBuilder;
 public class AuditFilter implements Filter {
 
     /** The user session attr name. */
-    private  String userSessionAttrName = null;
+    private String userSessionAttrName = null;
+
     /*
      * (non-Javadoc)
      * 
@@ -62,41 +65,43 @@ public class AuditFilter implements Filter {
 
     }
 
-
-    /* (non-Javadoc)
-     * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest,
+     * javax.servlet.ServletResponse, javax.servlet.FilterChain)
      */
     @SuppressWarnings("unchecked")
     @Override
-	public void doFilter(ServletRequest req, ServletResponse res,
-			FilterChain chain) throws IOException, ServletException {
-		HttpServletRequest request = (HttpServletRequest) req;
-        
-		String actor = null;
-        
+    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException,
+            ServletException {
+        HttpServletRequest request = (HttpServletRequest) req;
+
+        String actor = null;
+
         if (userSessionAttrName != null && !userSessionAttrName.equals("")) {
             HttpSession session = request.getSession(false);
-            actor = (String) session.getAttribute("");
+            actor = (String) session.getAttribute("userSessionAttrName");
         }
         String ipAddress = request.getRemoteAddr();
         String url = request.getRequestURL().toString();
-        
+
         EventBuilder builder = new EventBuilder();
         builder.addAction(url).addOrigin(ipAddress);
-        if (actor==null) {
+        if (actor == null) {
             builder.addActor(ipAddress);
         } else {
-            builder.addActor(actor);
+            builder.addActor(actor + "[" + ipAddress + "]");
         }
-        
+
         Map<String, String[]> params = req.getParameterMap();
-        
+
         for (final Map.Entry<String, String[]> entry : params.entrySet()) {
-			  builder.addField(entry.getKey(), entry.getValue());
-		}
-        
+            builder.addField(entry.getKey(), entry.getValue());
+        }
+
         AuditManager.getInstance().audit(builder.build());
         chain.doFilter(req, res);
-	}
+    }
 
 }
