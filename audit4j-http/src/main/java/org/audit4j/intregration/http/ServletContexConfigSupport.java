@@ -24,6 +24,7 @@ import org.audit4j.core.Configuration;
 import org.audit4j.core.MetaData;
 import org.audit4j.core.filter.AuditEventFilter;
 import org.audit4j.core.handler.Handler;
+import org.audit4j.core.jmx.JMXConfig;
 import org.audit4j.core.layout.Layout;
 import org.audit4j.core.util.ReflectUtil;
 
@@ -47,10 +48,11 @@ class ServletContexConfigSupport {
         String handlers = servletContext.getInitParameter(ContextConfigParams.PARAM_HANDLERS);
         String layout = servletContext.getInitParameter(ContextConfigParams.PARAM_LAYOUT);
         String filters = servletContext.getInitParameter(ContextConfigParams.PARAM_FILTERS);
-        String options = servletContext.getInitParameter(ContextConfigParams.PARAM_OPTIONS);
+        String commands = servletContext.getInitParameter(ContextConfigParams.PARAM_COMMANDS);
         String metaData = servletContext.getInitParameter(ContextConfigParams.PARAM_META_DATA);
         String properties = servletContext.getInitParameter(ContextConfigParams.PARAM_PROPERTIES);
-
+        String jmx  = servletContext.getInitParameter(ContextConfigParams.PARAM_PROPERTIES);
+        
         Configuration config = Configuration.INSTANCE;
         if (handlers != null && !handlers.equals("")) {
             config.setHandlers(new ReflectUtil<Handler>().getNewInstanceList(handlers.split(";")));
@@ -59,7 +61,7 @@ class ServletContexConfigSupport {
         if (filters != null && !filters.equals("")) {
             config.setFilters(new ReflectUtil<AuditEventFilter>().getNewInstanceList(filters.split(";")));
         }
-        config.setOptions(options);
+        config.setCommands(commands);
         config.setMetaData(new ReflectUtil<MetaData>().getNewInstance(metaData));
         if (properties != null && !properties.equals("")) {
             String[] propertiesList = properties.split(";");
@@ -67,6 +69,10 @@ class ServletContexConfigSupport {
                 String[] keyValue = property.split(":");
                 config.addProperty(keyValue[0], keyValue[1]);
             }
+        }
+        
+        if (jmx != null && jmx.equalsIgnoreCase("enabled")) {
+            config.setJmx(new JMXConfig());
         }
         return config;
     }

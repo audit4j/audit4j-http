@@ -37,11 +37,13 @@ class ContextConfigParams {
     static final String PARAM_FILTERS = "filters";
     
     /** The Constant PARAM_OPTIONS. */
-    static final String PARAM_OPTIONS = "options";
+    static final String PARAM_COMMANDS = "commands";
     
     /** The Constant PARAM_META_DATA. */
     static final String PARAM_META_DATA = "metaData";
     
     /** The Constant PARAM_PROPERTIES. */
     static final String PARAM_PROPERTIES = "properties";
+    
+    static final String PARAM_JMX = "jmx";
 }
