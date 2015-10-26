@@ -41,7 +41,7 @@
 	
 	<properties>
 		<global.version>1.0.0-alpha1</global.version>
-		<audit4j.version>2.3.1</audit4j.version>
+		<audit4j.version>2.4.0-alpha3</audit4j.version>
 		<junit.version>4.11</junit.version>
 		<mockito.version>1.10.19</mockito.version>
 	</properties>
